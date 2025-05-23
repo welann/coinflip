@@ -10,6 +10,10 @@ import CoinHistory from "./coin-history"
 import { toast } from "sonner"
 import CatHeads from "./cat-heads"
 import CatTails from "./cat-tails"
+import { useWallet } from '@suiet/wallet-kit';
+import { Transaction } from "@mysten/sui/transactions";
+// import { useSuiClient } from '@suiet/wallet-kit';
+// import { Provider } from "@mysten/sui"
 
 type CoinSide = "heads" | "tails"
 type FlipResult = { side: CoinSide; timestamp: number }
@@ -21,16 +25,106 @@ export default function CoinFlipGame() {
   const [stats, setStats] = useState({ heads: 0, tails: 0 })
   const [score, setScore] = useState(0)
   const [showInstructions, setShowInstructions] = useState(false)
+  const wallet = useWallet()
+  // const {
+  //   subscribeEvent,
+  // } = useSuiClient();
 
-  const flipCoin = () => {
+  const getfreecoin = async () => {
+    if (!wallet.connected) {
+      toast("Please connect your wallet first!", {
+        description: "You need to connect your wallet to get free coins.",
+      })
+      return
+    }
+
+    try {
+      const tx = new Transaction()
+      tx.moveCall({
+        target: `0x59a0dfe909f6fbc4f40143d91ca8f96de8e09da3e96a167aa0e0ef9f88065dbc::coinflipcontract::claim`,
+        arguments: [
+          tx.object("0x3dcce94f5597604800707f7519ae91425fa8fdaa7e79dfd1b35c8185a54216b0"),
+          tx.object("0xce217e687bbb40f1a4c349fc5824276fbd6caed926bd6ee27dcff74854283105")
+        ],
+      });
+
+      const msg = await wallet.signAndExecuteTransaction({
+        transaction: tx,
+      });
+
+      if (msg) {
+        toast("Success!", {
+          description: "Free coins have been sent to your wallet.",
+        })
+      }
+    } catch (error: unknown) {
+      console.error("Transaction error:", error);
+
+      if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' && error.message.includes('MoveAbort')) {
+        toast("Already Claimed!", {
+          description: "Each wallet can only claim free coins once.",
+          duration: 5000,
+        })
+      } else {
+        toast("Transaction Failed", {
+          description: "Something went wrong. Please try again later.",
+        })
+      }
+    }
+  };
+
+  const flipCoin = async () => {
+    if (!wallet.connected) {
+      toast("Please connect your wallet first!", {
+        description: "You need to connect your wallet to play the game.",
+      })
+      return
+    }
+
     if (!selectedSide) {
       toast("Please select a side first!", {
         description: "Choose heads or tails before flipping the coin.",
       })
       return
     }
+    // const unsubscribe = await Provider.subscribeEvent({
+    //   filter: {
+    //     MoveEventType: "0x59a0dfe909f6fbc4f40143d91ca8f96de8e09da3e96a167aa0e0ef9f88065dbc::coinflipcontract::FlipResult",
+    //   },
+    //   onMessage: (event) => {
+    //     console.log("subscribeEvent", JSON.stringify(event, null, 2))
+    //   }
+    // });
+    try {
+      // unsubscribe();
+      const tx = new Transaction()
 
-    setIsFlipping(true)
+      tx.moveCall({
+        target: `0x59a0dfe909f6fbc4f40143d91ca8f96de8e09da3e96a167aa0e0ef9f88065dbc::coinflipcontract::play`,
+        arguments: [
+          tx.object("0x3dcce94f5597604800707f7519ae91425fa8fdaa7e79dfd1b35c8185a54216b0"),
+          tx.object("0x8"),
+          tx.pure.u8(selectedSide === "heads" ? 0 : 1),
+          tx.pure.u64(100),
+        ],
+      });
+
+      const msg = await wallet.signAndExecuteTransaction({
+        transaction: tx,
+      });
+      console.log(tx)
+      if (msg) {
+        toast("Success!", {
+          description: "You have played the game.",
+        })
+      }
+    } catch (error: unknown) {
+      console.error("Transaction error:", error);
+      toast("Transaction Failed", {
+        description: "Something went wrong with your bet. Please try again.",
+      })
+    }
+    // unsubscribe();
 
     // Random number of rotations between 2 and 5
     const rotations = 2 + Math.floor(Math.random() * 4)
@@ -120,8 +214,15 @@ export default function CoinFlipGame() {
             <div className={cn("transition-all duration-300", selectedSide === "heads" ? "scale-110" : "opacity-80")}>
               <CatHeads />
             </div>
-            <div className="w-20 h-20 bg-[#F7F4E9] border-4 border-[#0A3A5A] rounded-lg flex items-center justify-center">
-              <div className="w-4 h-4 bg-[#0A3A5A] rounded-full"></div>
+            <div
+              className="w-20 h-20 bg-[#F7F4E9] border-4 border-[#0A3A5A] rounded-lg flex items-center justify-center cursor-pointer hover:bg-[#F7F4E9]/80 hover:scale-105 transition-all duration-300 relative group"
+              onClick={getfreecoin}
+            >
+              <div className="flex flex-col items-center gap-1">
+                <div className="w-4 h-4 bg-[#0A3A5A] rounded-full group-hover:animate-pulse"></div>
+                <span className="text-[#0A3A5A] font-bold text-sm group-hover:text-[#F39C50]">Free Coin!</span>
+              </div>
+              <div className="absolute -top-2 -right-2 w-4 h-4 bg-[#F39C50] rounded-full animate-bounce hidden group-hover:block"></div>
             </div>
             <div className={cn("transition-all duration-300", selectedSide === "tails" ? "scale-110" : "opacity-80")}>
               <CatTails />

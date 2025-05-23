@@ -1,6 +1,13 @@
+'use client';
+
 import { Toaster } from "@/components/ui/sonner"
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import {
+  WalletProvider,
+  SuietWallet,
+  SuiWallet,
+} from '@suiet/wallet-kit';
+import '@suiet/wallet-kit/style.css';
 import "./globals.css";
 
 const inter = Inter({
@@ -8,10 +15,6 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const metadata: Metadata = {
-  title: "Double or Nothing",
-  description: "Test your luck in this exciting coin flip game where winners double their stakes and losers walk away empty-handed. Place your bets and flip the coin!",
-};
 
 export default function RootLayout({
   children,
@@ -21,7 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
-        {children}
+        <WalletProvider defaultWallets={[
+          SuietWallet,
+          SuiWallet,
+        ]}>{children}</WalletProvider>
         <Toaster />
       </body>
     </html>

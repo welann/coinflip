@@ -164,7 +164,7 @@ public entry fun play(
     treasury: &mut GameTreasury,
     r: &Random,
     guess: u8,
-    player_coin: &mut Coin<COINFLIPCONTRACT>, // 添加玩家的代币参数
+    bet_amount: u64,
     ctx: &mut TxContext,
 ) {
     // 验证猜测是有效的
@@ -172,9 +172,8 @@ public entry fun play(
     // 验证下注金额大于0
     assert!(bet_amount > 0, EInvalidAmount);
     // 检查玩家余额
-    assert!(coin::value(player_coin) >= bet_amount, EInsufficientBalance);
 
-    let bet_coin = player_coin.split(bet_amount, ctx).into_balance();
+    let bet_coin = treasury.balance.split(bet_amount);
 
     let result = flip(r, ctx);
 
@@ -229,21 +228,21 @@ fun test_init() {
     ts.end();
 }
 
-sui client call --package 0xe2f847c0eda9ee97ff50d5c95d75ca02772f9b1f570b6f185ef360803dcded1e \
-    --module coinflipcontract \
-    --function claim \
-    --args \
-        0xc149b3f9e32d13cdfadc5818d52613bbe3e8d5222e2a248d0c93a03796812fd4 \
-        0x841e23d2dfa20e58bea45ee33e2e5de1d7a0514ac91b1496bdc52b3793f045d6 
+// sui client call --package 0xe2f847c0eda9ee97ff50d5c95d75ca02772f9b1f570b6f185ef360803dcded1e \
+//     --module coinflipcontract \
+//     --function claim \
+//     --args \
+//         0xc149b3f9e32d13cdfadc5818d52613bbe3e8d5222e2a248d0c93a03796812fd4 \
+//         0x841e23d2dfa20e58bea45ee33e2e5de1d7a0514ac91b1496bdc52b3793f045d6 
 
 
 
-sui client call --package 0xe2f847c0eda9ee97ff50d5c95d75ca02772f9b1f570b6f185ef360803dcded1e \
-    --module coinflipcontract \
-    --function play \
-    --args \
-        0xc149b3f9e32d13cdfadc5818d52613bbe3e8d5222e2a248d0c93a03796812fd4 \
-        0x8 \
-        1 \
-        10 \
-        0xe61280f521313eafdc8c09585516557a278393dbc5389dfa2ddb6d4bd4916499
+// sui client call --package 0xe2f847c0eda9ee97ff50d5c95d75ca02772f9b1f570b6f185ef360803dcded1e \
+//     --module coinflipcontract \
+//     --function play \
+//     --args \
+//         0xc149b3f9e32d13cdfadc5818d52613bbe3e8d5222e2a248d0c93a03796812fd4 \
+//         0x8 \
+//         1 \
+//         10 \
+//         0xe61280f521313eafdc8c09585516557a278393dbc5389dfa2ddb6d4bd4916499
