@@ -1,5 +1,10 @@
 # 🎲 CatFlip: Double or Nothing!
 
+<div align="center">
+<img src="./public/project.png" width="200px">
+</div>
+
+
 Welcome to the most purrfect coin flip game in the crypto space! 🐱
 
 ## 🎮 What's This All About?
