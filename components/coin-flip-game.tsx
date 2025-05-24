@@ -3,10 +3,10 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+// import { Badge } from "@/components/ui/badge"
 import { Coins, HelpCircle, Trophy } from "lucide-react"
 import { cn } from "@/lib/utils"
-import CoinHistory from "./coin-history"
+// import CoinHistory from "./coin-history"
 import { toast } from "sonner"
 import CatHeads from "./cat-heads"
 import CatTails from "./cat-tails"
@@ -16,14 +16,14 @@ import { Transaction } from "@mysten/sui/transactions";
 // import { Provider } from "@mysten/sui"
 
 type CoinSide = "heads" | "tails"
-type FlipResult = { side: CoinSide; timestamp: number }
+// type FlipResult = { side: CoinSide; timestamp: number }
 
 export default function CoinFlipGame() {
   const [selectedSide, setSelectedSide] = useState<CoinSide | null>(null)
-  const [isFlipping, setIsFlipping] = useState(false)
-  const [flipHistory, setFlipHistory] = useState<FlipResult[]>([])
-  const [stats, setStats] = useState({ heads: 0, tails: 0 })
-  const [score, setScore] = useState(0)
+  // const [isFlipping, setIsFlipping] = useState(false)
+  // const [flipHistory, setFlipHistory] = useState<FlipResult[]>([])
+  // const [stats, setStats] = useState({ heads: 0, tails: 0 })
+  // const [score, setScore] = useState(0)
   const [showInstructions, setShowInstructions] = useState(false)
   const wallet = useWallet()
   // const {
@@ -126,47 +126,47 @@ export default function CoinFlipGame() {
     }
     // unsubscribe();
 
-    // Random number of rotations between 2 and 5
-    const rotations = 2 + Math.floor(Math.random() * 4)
+    // // Random number of rotations between 2 and 5
+    // const rotations = 2 + Math.floor(Math.random() * 4)
 
-    // Determine the result (random)
-    const result: CoinSide = Math.random() > 0.5 ? "heads" : "tails"
+    // // Determine the result (random)
+    // const result: CoinSide = Math.random() > 0.5 ? "heads" : "tails"
 
-    // After animation completes
-    setTimeout(() => {
-      setIsFlipping(false)
+    // // After animation completes
+    // setTimeout(() => {
+    //   setIsFlipping(false)
 
-      // Update history
-      const newFlip = { side: result, timestamp: Date.now() }
-      setFlipHistory((prev) => [newFlip, ...prev].slice(0, 20))
+    //   // Update history
+    //   const newFlip = { side: result, timestamp: Date.now() }
+    //   setFlipHistory((prev) => [newFlip, ...prev].slice(0, 20))
 
-      // Update stats
-      setStats((prev) => ({
-        ...prev,
-        [result]: prev[result] + 1,
-      }))
+    //   // Update stats
+    //   setStats((prev) => ({
+    //     ...prev,
+    //     [result]: prev[result] + 1,
+    //   }))
 
-      // Update score
-      if (selectedSide === result) {
-        setScore((prev) => prev + 10)
-        toast("You won! 🎉", {
-          description: `You correctly guessed ${selectedSide === "heads" ? "heads" : "tails"} and earned 10 points!`,
-        })
-      } else {
-        toast("You lost! 😢", {
-          description: `The coin landed on ${result === "heads" ? "heads" : "tails"}, but you guessed ${selectedSide === "heads" ? "heads" : "tails"
-            }.`,
-        })
-      }
+    //   // Update score
+    //   if (selectedSide === result) {
+    //     setScore((prev) => prev + 10)
+    //     toast("You won! 🎉", {
+    //       description: `You correctly guessed ${selectedSide === "heads" ? "heads" : "tails"} and earned 10 points!`,
+    //     })
+    //   } else {
+    //     toast("You lost! 😢", {
+    //       description: `The coin landed on ${result === "heads" ? "heads" : "tails"}, but you guessed ${selectedSide === "heads" ? "heads" : "tails"
+    //         }.`,
+    //     })
+    //   }
 
-      // Reset selection
-      setSelectedSide(null)
-    }, rotations * 500) // Animation time based on rotations
+    //   // Reset selection
+    //   setSelectedSide(null)
+    // }, rotations * 500) // Animation time based on rotations
   }
 
-  const totalFlips = stats.heads + stats.tails
-  const headsPercentage = totalFlips > 0 ? Math.round((stats.heads / totalFlips) * 100) : 0
-  const tailsPercentage = totalFlips > 0 ? Math.round((stats.tails / totalFlips) * 100) : 0
+  // const totalFlips = stats.heads + stats.tails
+  // const headsPercentage = totalFlips > 0 ? Math.round((stats.heads / totalFlips) * 100) : 0
+  // const tailsPercentage = totalFlips > 0 ? Math.round((stats.tails / totalFlips) * 100) : 0
 
   return (
     <div className="w-full max-w-4xl">
@@ -177,12 +177,12 @@ export default function CoinFlipGame() {
               <Coins className="h-6 w-6 text-[#F39C50]" />
               <CardTitle className="text-2xl font-bold text-[#0A3A5A]">Cat Coin Flip</CardTitle>
             </div>
-            <Badge
+            {/* <Badge
               variant="outline"
               className="bg-[#5ECCE5]/20 text-[#0A3A5A] text-sm px-3 py-1 border-2 border-[#0A3A5A]"
             >
               Score: {score}
-            </Badge>
+            </Badge> */}
           </div>
         </CardHeader>
 
@@ -190,19 +190,19 @@ export default function CoinFlipGame() {
           {/* Stats Bar */}
           <div className="flex justify-between items-center mb-4 bg-[#5ECCE5]/20 rounded-lg p-2 border-2 border-[#0A3A5A]/30">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="bg-[#F7F4E9] text-[#0A3A5A] border-2 border-[#0A3A5A]">
+              {/* <Badge variant="outline" className="bg-[#F7F4E9] text-[#0A3A5A] border-2 border-[#0A3A5A]">
                 Total Flips: {totalFlips}
-              </Badge>
+              </Badge> */}
             </div>
-            <div className="flex items-center gap-2 text-sm">
+            {/* <div className="flex items-center gap-2 text-sm">
               <span className="font-bold text-[#F39C50]">Heads: {headsPercentage}%</span>
               <span className="mx-1">|</span>
               <span className="font-bold text-[#5ECCE5]">Tails: {tailsPercentage}%</span>
-            </div>
+            </div> */}
           </div>
 
           {/* Coin History */}
-          <CoinHistory history={flipHistory} />
+          {/* <CoinHistory history={flipHistory} /> */}
 
           {/* Main Coin */}
           <div className="flex justify-center my-6 relative h-48">
@@ -239,7 +239,7 @@ export default function CoinFlipGame() {
                 selectedSide === "heads" && "ring-4 ring-[#F39C50] scale-105",
               )}
               onClick={() => setSelectedSide("heads")}
-              disabled={isFlipping}
+            // disabled={isFlipping}
             >
               <div className="absolute inset-0 bg-[#F39C50]/20 rounded-full"></div>
               <div className="relative z-10 flex items-center justify-center gap-2">
@@ -258,7 +258,7 @@ export default function CoinFlipGame() {
                 selectedSide === "tails" && "ring-4 ring-[#5ECCE5] scale-105",
               )}
               onClick={() => setSelectedSide("tails")}
-              disabled={isFlipping}
+            // disabled={isFlipping}
             >
               <div className="absolute inset-0 bg-[#5ECCE5]/20 rounded-full"></div>
               <div className="relative z-10 flex items-center justify-center gap-2">
@@ -275,9 +275,9 @@ export default function CoinFlipGame() {
             size="lg"
             className="w-full bg-[#0A3A5A] hover:bg-[#0A3A5A]/80 text-white font-bold text-xl h-14 rounded-full border-4 border-[#0A3A5A] transition-all hover:scale-[1.02]"
             onClick={flipCoin}
-            disabled={isFlipping}
+          // disabled={isFlipping}
           >
-            {isFlipping ? "Flipping..." : "Flip Coin!"}
+            {"Flip Coin!"}
           </Button>
 
           {/* Instructions */}
@@ -320,7 +320,7 @@ export default function CoinFlipGame() {
 
             <div className="flex gap-2">
               <Trophy className="h-5 w-5 text-[#F39C50]" />
-              <span className="text-sm font-medium text-[#0A3A5A]">High Score: {score}</span>
+              {/* <span className="text-sm font-medium text-[#0A3A5A]">High Score: {score}</span> */}
             </div>
           </div>
 
